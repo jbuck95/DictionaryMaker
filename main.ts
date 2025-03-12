@@ -393,7 +393,7 @@ class ExtractWordsSettingTab extends PluginSettingTab {
             );
 
         // Wörterbücher verwalten
-        containerEl.createEl("h3", { text: "Manage Dictionary" });
+        containerEl.createEl("h3", { text: "Manage Dictionaries" });
         
         const dictList = containerEl.createEl("div", { cls: "dictionary-list" });
         
