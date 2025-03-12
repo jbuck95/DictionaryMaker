@@ -7,7 +7,7 @@ Plugin to make it easier managing your dictionary you use for example with the '
 - multiple dictionarys
 - to get autocompletion with plugins like 
 
-## has 4 commands to edit the dictionary: 
+## 4 commands to edit the dictionary: 
 
 ![commands](commands.png)
 

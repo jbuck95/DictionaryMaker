@@ -39,7 +39,7 @@ export default class ExtractWordsPlugin extends Plugin {
 
         this.addCommand({
             id: "append-selected-word",
-            name: "Add marked word to active dictionary",
+            name: "Add highlighted word to dictionary",
             editorCallback: async (editor: Editor) => {
                 console.log("Starte append-selected-word...");
                 await this.appendSelectedWord(editor);
