@@ -29,28 +29,28 @@ export default class ExtractWordsPlugin extends Plugin {
     }
 
     async extractAndAppendWords() {
-        // Datei auswählen
+        // Aktive Datei auswählen
         const activeFile = this.app.workspace.getActiveFile();
         if (!activeFile) {
             console.warn("Keine aktive Datei gefunden.");
             return;
         }
 
+        // Quelldatei lesen
         const sourceContent = await this.app.vault.read(activeFile);
-        const words = sourceContent
-            .replace(/[.,!?;:(){}\[\]<>«»"'`´]/g, "") // Satzzeichen entfernen
-            .split(/\s+/);
+        const words = this.cleanText(sourceContent);
 
-        // Wörter filtern und Duplikate entfernen
+        // Wörter nach Länge filtern und Duplikate entfernen
         const longWords = words.filter(word => word.length >= this.settings.minWordLength);
         const uniqueLongWords = [...new Set(longWords)];
 
-        // Ziel: dictionary.md finden oder erstellen
+        // dictionary.md finden oder erstellen
         let dictionaryFile = this.app.vault.getAbstractFileByPath("dictionary.md") as TFile;
         if (!dictionaryFile) {
             dictionaryFile = await this.app.vault.create("dictionary.md", "");
         }
 
+        // Bereits vorhandene Wörter einlesen
         const dictionaryContent = await this.app.vault.read(dictionaryFile);
         const existingWords = new Set(dictionaryContent.split("\n").map(line => line.trim()).filter(line => line !== ""));
         
@@ -64,6 +64,20 @@ export default class ExtractWordsPlugin extends Plugin {
         } else {
             console.log("Keine neuen Wörter zum Hinzufügen.");
         }
+    }
+
+    // **Textbereinigungsmethode**
+    cleanText(text: string): string[] {
+        return text
+            .replace(/[*_#>`-]/g, " ") // Markdown-Symbole entfernen
+            .replace(/\!\[.*?\]\(.*?\)/g, "") // Bilder entfernen (![Alt-Text](URL))
+            .replace(/\[.*?\]\(.*?\)/g, "") // Links entfernen ([Text](URL))
+            .replace(/(https?:\/\/[^\s]+)/g, "") // URLs entfernen
+            .replace(/[.,!?;:(){}\[\]<>«»"'`´]/g, "") // Satzzeichen entfernen
+            .replace(/\/?[\w\-]+?\.(png|jpg|jpeg|gif|svg|md|txt|pdf)/gi, "") // Dateipfade entfernen
+            .split(/\s+/) // In Wörter aufteilen
+            .map(word => word.trim())
+            .filter(word => word !== ""); // Leere Einträge entfernen
     }
 
     async loadSettings() {
