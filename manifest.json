@@ -1,6 +1,6 @@
 {
-	"id": "Dicman",
-	"name": "Dicman",
+	"id": "DicMan",
+	"name": "DicMan",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Manage your own Dictionary in Obsidian",

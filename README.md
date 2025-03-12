@@ -1,4 +1,4 @@
-# Dictionary Maker
+# Dictionary Manager
 
 Plugin to make it easier managing your dictionary you use for example with the 'various-complements* plugin. 
 
