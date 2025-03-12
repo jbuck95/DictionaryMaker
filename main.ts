@@ -21,7 +21,7 @@ export default class ExtractWordsPlugin extends Plugin {
 
         this.addCommand({
             id: "extract-long-words",
-            name: "Lange Wörter extrahieren",
+            name: "Automatic Extract",
             callback: async () => {
                 console.log("Starte extract-long-words...");
                 await this.extractAndAppendWords();
@@ -30,7 +30,7 @@ export default class ExtractWordsPlugin extends Plugin {
 
         this.addCommand({
             id: "sort-dictionary",
-            name: "Dictionary alphabetisch sortieren",
+            name: "Sort Dictionary alphabetically",
             callback: async () => {
                 console.log("Starte sort-dictionary...");
                 await this.sortDictionary();
@@ -39,7 +39,7 @@ export default class ExtractWordsPlugin extends Plugin {
 
         this.addCommand({
             id: "append-selected-word",
-            name: "Markiertes Wort zur Dictionary hinzufügen",
+            name: "Add marked word to active dictionary",
             editorCallback: async (editor: Editor) => {
                 console.log("Starte append-selected-word...");
                 await this.appendSelectedWord(editor);
@@ -48,7 +48,7 @@ export default class ExtractWordsPlugin extends Plugin {
 
         this.addCommand({
             id: "remove-word-from-dictionary",
-            name: "Wort aus Dictionary entfernen",
+            name: "Remove word from Dictionary",
             callback: async () => {
                 console.log("Starte remove-word-from-dictionary...");
                 await this.removeWordFromDictionary();
@@ -56,14 +56,14 @@ export default class ExtractWordsPlugin extends Plugin {
         });
 
         this.addSettingTab(new ExtractWordsSettingTab(this.app, this));
-        console.log("Plugin erfolgreich geladen.");
+        console.log("Loaded successful.");
     }
 
     async extractAndAppendWords() {
         const activeFile = this.app.workspace.getActiveFile();
         if (!activeFile) {
-            new Notice("Keine aktive Datei gefunden.");
-            console.warn("Keine aktive Datei gefunden.");
+            new Notice("No active Dictionary found.");
+            console.warn("No active Dictionary found.");
             return;
         }
 
@@ -90,27 +90,27 @@ export default class ExtractWordsPlugin extends Plugin {
             .filter(word => word !== "");
 
         if (words.length === 0) {
-            new Notice("Dictionary ist leer.");
-            console.log("Dictionary ist leer.");
+            new Notice("Dictionary is empty.");
+            console.log("Dictionary is empty.");
             return;
         }
 
         const sortedWords = [...new Set(words)].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
         const updatedContent = sortedWords.join("\n");
         await this.app.vault.modify(dictionaryFile, updatedContent);
-        new Notice("Dictionary wurde alphabetisch sortiert.");
+        new Notice("Dictionary sorted alphabetically.");
     }
 
     async appendSelectedWord(editor: Editor) {
         const selectedText = editor.getSelection().trim();
         if (!selectedText) {
-            new Notice("Kein Wort markiert.");
+            new Notice("Nothing marked.");
             return;
         }
 
         const cleanedWord = this.cleanText(selectedText)[0];
         if (!cleanedWord) {
-            new Notice("Markiertes Wort ist ungültig.");
+            new Notice("Marked word is invalid");
             return;
         }
 
@@ -119,19 +119,19 @@ export default class ExtractWordsPlugin extends Plugin {
         const existingWords = new Set(dictionaryContent.split("\n").map(line => line.trim()).filter(line => line !== ""));
 
         if (existingWords.has(cleanedWord)) {
-            new Notice(`${cleanedWord} ist bereits im Dictionary.`);
+            new Notice(`${cleanedWord} already in Dictionary.`);
             return;
         }
 
         const updatedContent = dictionaryContent ? `${dictionaryContent}\n${cleanedWord}` : cleanedWord;
         await this.app.vault.modify(dictionaryFile, updatedContent);
-        new Notice(`${cleanedWord} wurde zum Dictionary hinzugefügt.`);
+        new Notice(`${cleanedWord} added to Dictionary.`);
     }
 
     async removeWordFromDictionary() {
         const wordToRemove = await this.showRemoveWordModal();
         if (!wordToRemove) {
-            new Notice("Kein Wort zum Entfernen eingegeben.");
+            new Notice("No Word specified.");
             return;
         }
 
@@ -144,26 +144,26 @@ export default class ExtractWordsPlugin extends Plugin {
             .filter(word => word !== "");
 
         if (words.length === 0) {
-            new Notice("Dictionary ist leer.");
+            new Notice("Dictionary is empty.");
             return;
         }
 
         const cleanedWordToRemove = this.cleanText(wordToRemove)[0];
         if (!cleanedWordToRemove) {
-            new Notice("Ungültiges Wort zum Entfernen.");
+            new Notice("Invalid Word specified.");
             return;
         }
 
         const existingWords = new Set(words);
         if (!existingWords.has(cleanedWordToRemove)) {
-            new Notice(`${cleanedWordToRemove} wurde nicht im Dictionary gefunden.`);
+            new Notice(`${cleanedWordToRemove} was not found in the active Dictionary.`);
             return;
         }
 
         const updatedWords = words.filter(word => word !== cleanedWordToRemove);
         const updatedContent = updatedWords.join("\n");
         await this.app.vault.modify(dictionaryFile, updatedContent);
-        new Notice(`${cleanedWordToRemove} wurde aus dem Dictionary entfernt.`);
+        new Notice(`${cleanedWordToRemove} was deleted from Dictionary.`);
     }
 
     async showRemoveWordModal(): Promise<string | null> {
@@ -177,8 +177,8 @@ export default class ExtractWordsPlugin extends Plugin {
 
                 onOpen() {
                     const { contentEl } = this;
-                    contentEl.createEl("h2", { text: "Wort aus Dictionary entfernen" });
-                    contentEl.createEl("p", { text: "Gib das Wort ein, das entfernt werden soll:" });
+                    contentEl.createEl("h2", { text: "Delete Word from Dictionary" });
+                    contentEl.createEl("p", { text: "Enter Word to remove:" });
 
                     const input = contentEl.createEl("input", { type: "text" });
                     input.addEventListener("keypress", (e: KeyboardEvent) => {
@@ -188,7 +188,7 @@ export default class ExtractWordsPlugin extends Plugin {
                         }
                     });
 
-                    const button = contentEl.createEl("button", { text: "Entfernen" });
+                    const button = contentEl.createEl("button", { text: "Remove" });
                     button.addEventListener("click", () => {
                         this.result = input.value.trim();
                         this.close();
@@ -212,13 +212,13 @@ export default class ExtractWordsPlugin extends Plugin {
             const path = this.settings.activeDictionary;
             let targetFile = this.app.vault.getAbstractFileByPath(path) as TFile;
             if (!targetFile) {
-                console.log(`Erstelle neue Datei: ${path}`);
+                console.log(`Create new file: ${path}`);
                 targetFile = await this.app.vault.create(path, "");
             }
             return targetFile;
         } catch (error) {
-            console.error("Fehler beim Erstellen/Holen der Zieldatei:", error);
-            new Notice("Fehler beim Zugriff auf die Zieldatei.");
+            console.error("Can't create File:", error);
+            new Notice("Can't access target File.");
             throw error;
         }
     }
@@ -227,9 +227,9 @@ export default class ExtractWordsPlugin extends Plugin {
         if (words.length > 0) {
             const updatedContent = currentContent ? `${currentContent}\n${words.join("\n")}` : words.join("\n");
             await this.app.vault.modify(file, updatedContent);
-            new Notice(`Hinzugefügt: ${words.length} Wörter`);
+            new Notice(`Added: ${words.length} Words`);
         } else {
-            new Notice("Keine neuen Wörter zum Hinzufügen.");
+            new Notice("No new words found.");
         }
     }
 
@@ -280,7 +280,7 @@ export default class ExtractWordsPlugin extends Plugin {
             }
         }
         
-        console.log("Geladene Einstellungen:", this.settings);
+        console.log("Loaded Settings:", this.settings);
     }
 
     async saveSettings() {
@@ -302,8 +302,8 @@ class ExtractWordsSettingTab extends PluginSettingTab {
 
         // Minimale Wortlänge-Einstellung
         new Setting(containerEl)
-            .setName("Minimale Wortlänge")
-            .setDesc("Mindestlänge für extrahierte Wörter (nur für automatische Extraktion)")
+            .setName("Minimal Wordlength:")
+            .setDesc("Minimal wordlenght for extracted words (only affects automatic extraction)")
             .addText(text => text
                 .setPlaceholder("5")
                 .setValue(this.plugin.settings.minWordLength.toString())
@@ -322,8 +322,8 @@ class ExtractWordsSettingTab extends PluginSettingTab {
         }
 
         new Setting(containerEl)
-            .setName("Aktives Wörterbuch")
-            .setDesc("Wähle das zu bearbeitende Wörterbuch aus")
+            .setName("Aktive Dictionary")
+            .setDesc("Choose Dictionary to edit")
             .addDropdown(dropdown => {
                 // Füge alle Wörterbücher zum Dropdown hinzu
                 this.plugin.settings.dictionaries.forEach(path => {
@@ -336,14 +336,14 @@ class ExtractWordsSettingTab extends PluginSettingTab {
                 dropdown.onChange(async (value) => {
                     this.plugin.settings.activeDictionary = value;
                     await this.plugin.saveSettings();
-                    new Notice(`Wörterbuch gewechselt zu: ${value.split('/').pop() || value}`);
+                    new Notice(`Switched Dictionary to: ${value.split('/').pop() || value}`);
                 });
             });
 
         // Neues Wörterbuch hinzufügen
         new Setting(containerEl)
-            .setName("Neues Wörterbuch")
-            .setDesc("Füge ein neues Wörterbuch hinzu (z.B. 'wörterbücher/philosophie.md')")
+            .setName("New Dictionary")
+            .setDesc("Add a new Dictionary (z.B. 'dictionary/philosophy.md')")
             .addText(text => {
                 text.setPlaceholder("Pfad zur .md-Datei");
                 text.onChange(async (value) => {
@@ -358,11 +358,11 @@ class ExtractWordsSettingTab extends PluginSettingTab {
                                 this.plugin.settings.dictionaries.push(correctedPath);
                                 this.plugin.settings.activeDictionary = correctedPath;
                                 await this.plugin.saveSettings();
-                                new Notice(`Neues Wörterbuch hinzugefügt: ${correctedPath}`);
+                                new Notice(`Added new Dictionary: ${correctedPath}`);
                                 text.setValue(""); // Feld leeren
                                 this.display(); // Anzeige aktualisieren
                             } else {
-                                new Notice("Dieses Wörterbuch existiert bereits!");
+                                new Notice("Dictionary already exists!");
                             }
                         }
                     });
@@ -370,7 +370,7 @@ class ExtractWordsSettingTab extends PluginSettingTab {
                 return text;
             })
             .addButton(button => button
-                .setButtonText("Hinzufügen")
+                .setButtonText("Add")
                 .onClick(async () => {
                     const inputEl = button.buttonEl.parentElement?.querySelector("input") as HTMLInputElement;
                     if (inputEl && inputEl.value.trim() !== "") {
@@ -382,18 +382,18 @@ class ExtractWordsSettingTab extends PluginSettingTab {
                             this.plugin.settings.dictionaries.push(correctedPath);
                             this.plugin.settings.activeDictionary = correctedPath;
                             await this.plugin.saveSettings();
-                            new Notice(`Neues Wörterbuch hinzugefügt: ${correctedPath}`);
+                            new Notice(`New Dictionary added: ${correctedPath}`);
                             inputEl.value = ""; // Feld leeren
                             this.display(); // Anzeige aktualisieren
                         } else {
-                            new Notice("Dieses Wörterbuch existiert bereits!");
+                            new Notice("Dictionary already exists!");
                         }
                     }
                 })
             );
 
         // Wörterbücher verwalten
-        containerEl.createEl("h3", { text: "Wörterbücher verwalten" });
+        containerEl.createEl("h3", { text: "Manage Dictionary" });
         
         const dictList = containerEl.createEl("div", { cls: "dictionary-list" });
         
@@ -435,7 +435,7 @@ class ExtractWordsSettingTab extends PluginSettingTab {
             deleteButton.addEventListener("click", async () => {
                 // Verhindere das Löschen, wenn es das einzige Wörterbuch ist
                 if (this.plugin.settings.dictionaries.length <= 1) {
-                    new Notice("Das letzte Wörterbuch kann nicht gelöscht werden!");
+                    new Notice("last Dictionary can't be deleted!");
                     return;
                 }
                 
@@ -447,17 +447,17 @@ class ExtractWordsSettingTab extends PluginSettingTab {
                 }
                 
                 await this.plugin.saveSettings();
-                new Notice(`Wörterbuch entfernt: ${displayName}`);
+                new Notice(`Dictionar deleted: ${displayName}`);
                 this.display();
             });
             
             // Aktivieren-Button (nur anzeigen, wenn nicht aktiv)
             if (!isActive) {
-                const activateButton = dictItem.createEl("button", { text: "Aktivieren" });
+                const activateButton = dictItem.createEl("button", { text: "activate" });
                 activateButton.addEventListener("click", async () => {
                     this.plugin.settings.activeDictionary = path;
                     await this.plugin.saveSettings();
-                    new Notice(`Wörterbuch aktiviert: ${displayName}`);
+                    new Notice(`Dictionary activated: ${displayName}`);
                     this.display();
                 });
             }
