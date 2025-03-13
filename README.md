@@ -1,18 +1,17 @@
 # Dictionary Manager
 
-Plugin to make it easier managing your dictionary you use for example with the *various-complements* plugin. 
+Plugin to make it easier to manage your dictionaries, used e.g. with the *various-complements* plugin.
 
-- you can define a number of minimum letters so only long words will be extracted for your dictionary, or 
-- add / remove entries manually to 
-- multiple dictionarys
+- You can define a minimum number of letters so that only long words are extracted for your dictionary, or 
+- add/remove entries manually to/from 
+- multiple dictionaries 
+- sort the dictionary alphabetically.
 
-## 4 commands to edit the dictionary: 
+## Commands: 
 
 ![commands](commands.png)
 
 
 ## Settings: 
-
-- you can define multiple Dictionarys to activate/edit so you have the autocomp you want. 
 
 ![settings](settings.png)
