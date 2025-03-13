@@ -303,7 +303,7 @@ class ExtractWordsSettingTab extends PluginSettingTab {
         // Minimale Wortlänge-Einstellung
         new Setting(containerEl)
             .setName("Minimal Wordlength:")
-            .setDesc("Minimal wordlenght for extracted words (only affects automatic extraction)")
+            .setDesc("Length words must reach to be extracted (only affects automatic extraction)")
             .addText(text => text
                 .setPlaceholder("5")
                 .setValue(this.plugin.settings.minWordLength.toString())
@@ -322,7 +322,7 @@ class ExtractWordsSettingTab extends PluginSettingTab {
         }
 
         new Setting(containerEl)
-            .setName("Aktive Dictionary")
+            .setName("Active Dictionary")
             .setDesc("Choose Dictionary to edit")
             .addDropdown(dropdown => {
                 // Füge alle Wörterbücher zum Dropdown hinzu
@@ -343,9 +343,9 @@ class ExtractWordsSettingTab extends PluginSettingTab {
         // Neues Wörterbuch hinzufügen
         new Setting(containerEl)
             .setName("New Dictionary")
-            .setDesc("Add a new Dictionary (z.B. 'dictionary/philosophy.md')")
+            .setDesc("Add a new Dictionary (e.g. 'dictionary/philosophy.md')")
             .addText(text => {
-                text.setPlaceholder("Pfad zur .md-Datei");
+                text.setPlaceholder("path to .md");
                 text.onChange(async (value) => {
                     // Nur speichern, wenn Enter gedrückt wird
                     text.inputEl.addEventListener("keydown", async (e: KeyboardEvent) => {
@@ -431,7 +431,7 @@ class ExtractWordsSettingTab extends PluginSettingTab {
             });
             
             // Löschen-Button
-            const deleteButton = dictItem.createEl("button", { text: "Löschen" });
+            const deleteButton = dictItem.createEl("button", { text: "delete" });
             deleteButton.addEventListener("click", async () => {
                 // Verhindere das Löschen, wenn es das einzige Wörterbuch ist
                 if (this.plugin.settings.dictionaries.length <= 1) {
