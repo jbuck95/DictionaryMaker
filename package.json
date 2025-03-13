@@ -1,7 +1,7 @@
 {
 	"name": "DictionaryManager",
 	"version": "1.0.0",
-	"description": "Manage your own Dictionary for Obsidian",
+	"description": "Manage your own Dictionary for Obsidian.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

@@ -5,7 +5,7 @@ Plugin to *complement* the *various-complements* plugin amd make it easier to ma
 - You can define a minimum number of letters so that only long words are extracted for your dictionary, or 
 - add/remove entries manually to/from 
 - multiple dictionaries 
-- sort the dictionary alphabetically.
+- sort the dictionary entries alphabetically.
 
 ## Commands: 
 
