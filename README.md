@@ -1,6 +1,6 @@
 # Dictionary Manager
 
-Plugin to make it easier to manage your dictionaries, used e.g. with the *various-complements* plugin.
+Plugin to *complement* the *various-complements* plugin amd make it easier to manage your custom dictionaries.
 
 - You can define a minimum number of letters so that only long words are extracted for your dictionary, or 
 - add/remove entries manually to/from 
@@ -15,3 +15,10 @@ Plugin to make it easier to manage your dictionaries, used e.g. with the *variou
 ## Settings: 
 
 ![settings](settings.png)
+
+
+
+**various-complements:**
+https://github.com/tadashi-aikawa/obsidian-various-complements-plugin
+
+
